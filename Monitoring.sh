@@ -40,6 +40,7 @@ else
   ## sudo az acr login --name ghmccontainer --username $username -p $password
   
   sudo az acr login --name $container r --username $username -p $password
+  
    CONTAINER_REGISTRY = $contaiiner + ".azurecr.io/monitor:latest "
   ## sudo docker pull ghmccontainer.azurecr.io/monitor:latest 
   ## sudo docker pull ghpiamecontainer.azurecr.io/monitor:latest
@@ -126,7 +127,7 @@ sudo docker stop $MyContainerId
 fi
 
 ## MyContainerId="$(sudo docker run -it --privileged --rm -d --network host --name monitor ghpiamecontainer.azurecr.io/monitor:latest)"
-MyContainerId="$(sudo docker run -it --privileged --rm -d --network host --name monitor ghmccontainer.azurecr.io/monitor:latest)"
+MyContainerId="$(sudo docker run -it --privileged --rm -d --network host --name monitor $CONTAINER_REGISTRY)"
   if [[ -z $MyContainerId ]]
   then
     echo "Error : Failed to run monitor container.Exiting the script..."
