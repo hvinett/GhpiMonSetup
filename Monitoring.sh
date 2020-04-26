@@ -41,7 +41,7 @@ else
   
   sudo az acr login --name $container r --username $username -p $password
   
-   CONTAINER_REGISTRY = $contaiiner + ".azurecr.io/monitor:latest "
+   CONTAINER_REGISTRY = $container".azurecr.io/monitor:latest"
   ## sudo docker pull ghmccontainer.azurecr.io/monitor:latest 
   ## sudo docker pull ghpiamecontainer.azurecr.io/monitor:latest
    sudo docker pull $CONTAINER_REGISTRY
