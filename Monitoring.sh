@@ -12,6 +12,7 @@ while getopts ":t:u:p:c" opt; do
     p) password="$OPTARG"
     ;;
     c) container="$OPTARG"
+    ;;
     \?) echo "Invalid option -$OPTARG" >&2
     ;;
   esac
