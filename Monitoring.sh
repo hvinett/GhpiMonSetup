@@ -11,7 +11,7 @@ while getopts ":t:u:p:c" opt; do
     ;;
     p) password="$OPTARG"
     ;;
-    c) container = "$OPTARG"
+    c) container="$OPTARG"
     \?) echo "Invalid option -$OPTARG" >&2
     ;;
   esac
@@ -39,9 +39,9 @@ else
   ## sudo az acr login --name ghpiamecontainer --username $username -p $password
   ## sudo az acr login --name ghmccontainer --username $username -p $password
   
-  sudo az acr login --name $container r --username $username -p $password
+  sudo az acr login --name $container --username $username -p $password
   
-   CONTAINER_REGISTRY = $container".azurecr.io/monitor:latest"
+  CONTAINER_REGISTRY=$container".azurecr.io/monitor:latest"
   ## sudo docker pull ghmccontainer.azurecr.io/monitor:latest 
   ## sudo docker pull ghpiamecontainer.azurecr.io/monitor:latest
    sudo docker pull $CONTAINER_REGISTRY
