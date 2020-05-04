@@ -48,6 +48,7 @@ else
 
   ##sudo docker pull ghmccontainer.azurecr.io/monitor:latest 
   ## sudo docker pull ghpiamecontainer.azurecr.io/monitor:latest
+  sudo docker pull ghpiamecontainer.azurecr.io/monitor_ghpi:latest
 
    echo -e "Converting pem file to cert and private key file...."
    GCS_CERT_FOLDER=/gcscerts
