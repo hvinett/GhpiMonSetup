@@ -133,7 +133,7 @@ fi
 
 
 ## MyContainerId="$(sudo docker run -it --privileged --rm -d --network host --name monitor ghpiamecontainer.azurecr.io/monitor:latest)"
-MyContainerId="$(sudo docker run -it --privileged --rm -d --network host --name monitor ghmccontainer.azurecr.io/monitor_ghpi:latest)"
+MyContainerId="$(sudo docker run -it --privileged --rm -d --network host --name monitor_ghpi ghmccontainer.azurecr.io/monitor_ghpi:latest)"
   if [[ -z $MyContainerId ]]
   then
     echo "Error : Failed to run monitor container.Exiting the script..."
