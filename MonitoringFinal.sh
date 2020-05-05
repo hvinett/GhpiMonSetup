@@ -3,7 +3,7 @@
 set -e
 
 ## Fetch Monitoring Docker image from Azure Container Registry 
-while getopts ":t:u:p:r:v:u:n:e:a:" opt; do
+while getopts ":t:u:p:r:v:f:n:e:a:" opt; do
   case $opt in
     t) tenant="$OPTARG"
     ;;
@@ -15,7 +15,7 @@ while getopts ":t:u:p:r:v:u:n:e:a:" opt; do
     ;;
     v) config_version="$OPTARG"
     ;;
-    u) front_end_url="$OPTARG"
+    f) front_end_url="$OPTARG"
     ;;
     n) monitoring_namespace="$OPTARG"
     ;;
