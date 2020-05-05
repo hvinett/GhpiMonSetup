@@ -22,6 +22,7 @@ while getopts ":t:u:p:r:v:u:n:e:a" opt; do
     e) monitoring_environment="$OPTARG"
     ;;
     a) monitoring_account="$OPTARG"
+    ;;
     \?) echo "Invalid option -$OPTARG" >&2
     ;;
   esac
