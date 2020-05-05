@@ -3,7 +3,7 @@
 set -e
 
 ## Fetch Monitoring Docker image from Azure Container Registry 
-while getopts ":t:u:p:c:r:v:u:" opt; do
+while getopts ":t:u:p:r:v:u:n:e:a" opt; do
   case $opt in
     t) tenant="$OPTARG"
     ;;
@@ -11,14 +11,17 @@ while getopts ":t:u:p:c:r:v:u:" opt; do
     ;;
     p) password="$OPTARG"
     ;;
-    c) container="$OPTARG"
-    ;;
     r) monitoring_role="$OPTARG"
     ;;
     v) config_version="$OPTARG"
     ;;
     u) front_end_url="$OPTARG"
     ;;
+    n) monitoring_namespace="$OPTARG"
+    ;;
+    e) monitoring_environment="$OPTARG"
+    ;;
+    a) monitoring_account="$OPTARG"
     \?) echo "Invalid option -$OPTARG" >&2
     ;;
   esac
@@ -100,9 +103,9 @@ cat > /tmp/mdsd <<EOT
 
     MDSD_OPTIONS="-A -c /etc/mdsd.d/mdsd.xml -d -r $MDSD_ROLE_PREFIX -e $MDSDLOG/mdsd.err -w $MDSDLOG/mdsd.warn -o $MDSDLOG/mdsd.info"
 
-    export MONITORING_GCS_ENVIRONMENT=Test
+    export MONITORING_GCS_ENVIRONMENT=$monitoring_environment
 
-    export MONITORING_GCS_ACCOUNT=GHPILOGS
+    export MONITORING_GCS_ACCOUNT=$monitoring_account
 
     export MONITORING_GCS_REGION=westus
     # or, pulling data from IMDS
@@ -118,7 +121,7 @@ cat > /tmp/mdsd <<EOT
     export MONITORING_GCS_CERT_KEYFILE="$GCS_KEY"     # update for your private key on disk
     
     # Below are to enable GCS config download
-    export MONITORING_GCS_NAMESPACE=GHPILOGS
+    export MONITORING_GCS_NAMESPACE=$monitoring_namespace
     export MONITORING_CONFIG_VERSION=$config_version
     export MONITORING_USE_GENEVA_CONFIG_SERVICE=true
     export MONITORING_TENANT=$tenant
