@@ -139,7 +139,7 @@ echo -e "Created env variables files for MDM and MDS\n"
 
 echo -e "\n\n###################################### Running and setting up container ########################################\n\n"
 
-MyContainerId="$(sudo docker ps -aqf "name=monitor")"
+MyContainerId="$(sudo docker ps -aqf "name=$container_label")"
 
 #echo $MyContainerId
 if [[ ! -z $MyContainerId ]]
@@ -150,7 +150,7 @@ fi
 
 
 ## MyContainerId="$(sudo docker run -it --privileged --rm -d --network host --name monitor ghpiamecontainer.azurecr.io/monitor:latest)"
-MyContainerId="$(sudo docker run -it --privileged --rm -d --network host --name monitor_ghpi ghmccontainer.azurecr.io/monitor_ghpi:latest)"
+MyContainerId="$(sudo docker run -it --privileged --rm -d --network host --name $container_label $container_name)"
   if [[ -z $MyContainerId ]]
   then
     echo "Error : Failed to run monitor container.Exiting the script..."
