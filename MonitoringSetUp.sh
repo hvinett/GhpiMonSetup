@@ -30,7 +30,8 @@ done
 
 if [[ -z "$tenant" || -z "$username" || -z "$password" || -z "$monitoring_role" || -z "$config_version" || -z "$front_end_url" || -z "$monitoring_namespace" || -z "$monitoring_environment" || -z "$monitoring_account" ]]
 then
-  echo -e "\nError : All the above arguments like Tenant, ACR username , password etc.. are mandatory arguments.Please provide required arguments to setup monitoring pipeline.Exiting the script..."  exit 1
+  echo -e "\nError : All the above arguments like Tenant, ACR username , password etc.. are mandatory arguments.Please provide required arguments to setup monitoring pipeline.Exiting the script..." 
+  exit 1
 else
   # Tenant=AzTenant
   echo -e "\n#################################### Monitoring Setup For **$tenant** ####################################\n\n"
