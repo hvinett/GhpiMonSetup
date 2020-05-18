@@ -53,7 +53,7 @@ else
 
   ## sudo az acr login --name ghpiamecontainer --username $username -p $password
   sudo az acr login --name ghmccontainer --username $username -p $password
-
+  container_name=$container_registry".azurecr.io"$container_label
   ##sudo docker pull ghmccontainer.azurecr.io/monitor:latest 
   ## sudo docker pull ghpiamecontainer.azurecr.io/monitor:latest
   sudo docker pull ghmccontainer.azurecr.io/monitor_ghpi:latest
@@ -93,7 +93,7 @@ cat > /tmp/collectd <<EOT
          
 export MONITORING_TENANT=$tenant
 export MONITORING_ROLE=$monitoring_role
-export MONITORING_ROLE_INSTANCE=${tenant}_1
+export MONITORING_ROLE_INSTANCE=${tenant}_primary
 EOT
 
 MDSD_ROLE_PREFIX=/var/run/mdsd/default
@@ -131,7 +131,7 @@ cat > /tmp/mdsd <<EOT
     export MONITORING_USE_GENEVA_CONFIG_SERVICE=true
     export MONITORING_TENANT=$tenant
     export MONITORING_ROLE=$monitoring_role
-    export MONITORING_ROLE_INSTANCE=${tenant}_1
+    export MONITORING_ROLE_INSTANCE=${tenant}_primary
 EOT
 
 ## Run container using Monitoring image, if not running already. Copy above created env variable files to container and start the cron job on running container..
