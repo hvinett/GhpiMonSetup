@@ -23,6 +23,10 @@ while getopts ":t:u:p:r:v:f:n:e:a:" opt; do
     ;;
     a) monitoring_account="$OPTARG"
     ;;
+    c) container_registry="$OPTARG"
+    ;;
+    l) container_label="$OPTARG"
+    ;;
     \?) echo "Invalid option -$OPTARG" >&2
     ;;
   esac
@@ -47,12 +51,13 @@ else
 
   echo -e "\n\n###################################### Logging into ACR and Pulling Monitoring Image ###########################\n\n"
 
+  container_name=$container_registry".azurecr.io/"$container_label":latest"
   ## sudo az acr login --name ghpiamecontainer --username $username -p $password
   sudo az acr login --name ghmccontainer --username $username -p $password
 
   ##sudo docker pull ghmccontainer.azurecr.io/monitor:latest 
   ## sudo docker pull ghpiamecontainer.azurecr.io/monitor:latest
-  #sudo docker pull ghmccontainer.azurecr.io/monitor_ghpi:latest
+  sudo docker pull $container_name
 
    echo -e "Converting pem file to cert and private key file...."
    GCS_CERT_FOLDER=/gcscerts
@@ -89,8 +94,7 @@ cat > /tmp/collectd <<EOT
          
 export MONITORING_TENANT=$tenant
 export MONITORING_ROLE=$monitoring_role
-export MONITORING_ROLE_INSTANCE=${tenant}_1
-export URL=$front_end_url
+export MONITORING_ROLE_INSTANCE=${tenant}_primay
 EOT
 
 MDSD_ROLE_PREFIX=/var/run/mdsd/default
@@ -128,8 +132,7 @@ cat > /tmp/mdsd <<EOT
     export MONITORING_USE_GENEVA_CONFIG_SERVICE=true
     export MONITORING_TENANT=$tenant
     export MONITORING_ROLE=$monitoring_role
-    export MONITORING_ROLE_INSTANCE=${tenant}_1
-    export URL=$front_end_url
+    export MONITORING_ROLE_INSTANCE=${tenant}_primary
 EOT
 
 ## Run container using Monitoring image, if not running already. Copy above created env variable files to container and start the cron job on running container..
@@ -137,7 +140,7 @@ echo -e "Created env variables files for MDM and MDS\n"
 
 echo -e "\n\n###################################### Running and setting up container ########################################\n\n"
 
-MyContainerId="$(sudo docker ps -aqf "name=monitor")"
+MyContainerId="$(sudo docker ps -aqf "name=$container_label")"
 
 #echo $MyContainerId
 if [[ ! -z $MyContainerId ]]
@@ -148,9 +151,8 @@ fi
 
 
 ## MyContainerId="$(sudo docker run -it --privileged --rm -d --network host --name monitor ghpiamecontainer.azurecr.io/monitor:latest)"
-## MyContainerId="$(sudo docker run -it --privileged --rm -d --network host --name monitor_ghpi ghmccontainer.azurecr.io/monitor_ghpi:latest)"
- MyContainerId="$(sudo docker run -it --privileged --rm -d --network host --name mon_test mon_test)"
- if [[ -z $MyContainerId ]]
+MyContainerId="$(sudo docker run -it --privileged --rm -d --network host --name $container_label $container_name)"
+  if [[ -z $MyContainerId ]]
   then
     echo "Error : Failed to run monitor container.Exiting the script..."
     exit 1
