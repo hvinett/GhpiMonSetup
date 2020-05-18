@@ -53,10 +53,10 @@ else
 
   ## sudo az acr login --name ghpiamecontainer --username $username -p $password
   sudo az acr login --name ghmccontainer --username $username -p $password
-  container_name=$container_registry".azurecr.io"$container_label
+  container_name=$container_registry".azurecr.io"$container_label":latest"
   ##sudo docker pull ghmccontainer.azurecr.io/monitor:latest 
   ## sudo docker pull ghpiamecontainer.azurecr.io/monitor:latest
-  sudo docker pull ghmccontainer.azurecr.io/monitor_ghpi:latest
+  sudo docker pull $container_name
 
    echo -e "Converting pem file to cert and private key file...."
    GCS_CERT_FOLDER=/gcscerts
