@@ -56,7 +56,7 @@ do
         container_registry="${i#*=}"
         echo "container registry: $container_registry"
         ;;
-    --container_label=*)  
+    --containerLabel=*)  
         shift
         container_label="${i#*=}"
         echo "container label: $container_label"
