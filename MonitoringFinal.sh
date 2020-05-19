@@ -67,7 +67,7 @@ key="$1"
         shift
         echo "container registry: $container_registry"
         ;;
-    --container_label)  
+    --containerLabel)  
         container_label=$2
         shift
         shift
