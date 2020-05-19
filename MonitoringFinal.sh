@@ -3,29 +3,88 @@
 set -e
 
 ## Fetch Monitoring Docker image from Azure Container Registry 
-while getopts ":t:u:p:r:v:f:n:e:a:" opt; do
-  case $opt in
-    t) tenant="$OPTARG"
-    ;;
-    u) username="$OPTARG"
-    ;;
-    p) password="$OPTARG"
-    ;;
-    r) monitoring_role="$OPTARG"
-    ;;
-    v) config_version="$OPTARG"
-    ;;
-    f) front_end_url="$OPTARG"
-    ;;
-    n) monitoring_namespace="$OPTARG"
-    ;;
-    e) monitoring_environment="$OPTARG"
-    ;;
-    a) monitoring_account="$OPTARG"
-    ;;
-    \?) echo "Invalid option -$OPTARG" >&2
-    ;;
-  esac
+# Read command line options
+ARGUMENT_LIST=(
+    "tenant"
+    "userName"
+    "password"
+    "monitoringRole"
+    "configVersion"
+    "frontEndUrl"
+    "monitoringNamespace"
+    "monitoringEnvironment"
+    "monitoringAccount"
+    "containerRegistry"
+    "containerLabel"
+)
+
+
+
+# read arguments
+opts=$(getopt \
+    --longoptions "$(printf "%s:," "${ARGUMENT_LIST[@]}")" \
+    --name "$(basename "$0")" \
+    --options "" \
+    -- "$@"
+)
+
+
+echo $opts
+
+eval set --$opts
+
+while true; do
+    case "$1" in
+    --tenant)  
+        shift
+        tenant=$1
+        ;;
+    --userName)  
+        shift
+        userName=$1
+        ;;
+    --password)  
+        shift
+        password=$1
+        ;;
+    --monitoringRole)  
+        shift
+        toDate=$1
+        ;;
+    --configVersion)  
+        shift
+        config_version=$1
+        ;;
+    --frontEndUrl)  
+        shift
+        front_end_url=$1
+        ;;
+    --monitoringNamespace)  
+        shift
+        monitoring_namespace=$1
+        ;;
+    --monitoringEnvironment)  
+        shift
+        monitoring_environment=$1
+        ;;
+    --monitoringAccount)  
+        shift
+        toDate=$1
+        ;;
+    --containerRegistry)  
+        shift
+        container_registry=$1
+        ;;
+    --container_label)  
+        shift
+        toDate=$1
+        ;;
+    --)
+        shift
+        break
+        ;;
+    esac
+    shift
 done
 
 if [[ -z "$tenant" || -z "$username" || -z "$password" ]]
