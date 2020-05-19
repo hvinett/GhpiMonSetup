@@ -75,6 +75,7 @@ key="$1"
         ;;
     esac
     shift
+    shift
 done
 echo "Tenant = ${tenant}"
 
