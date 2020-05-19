@@ -1,6 +1,5 @@
 #!/bin/bash
 
-set -e
 POSITIONAL=()
 while [[ $# -gt 0 ]]
 do
@@ -77,75 +76,70 @@ done
 
 if [[ -z "$tenant" ]]
 then 
-    echo "\nError: Tenant is mandatory. Please provide Tenant name to setup monitoring pipeline. Exiting the script."
+    echo "\nError: Tenant is mandatory. Please provide Tenant to setup monitoring pipeline. Exiting the script."
     exit 1
 fi
 
 if [[ -z "$username" ]]
 then 
-    echo "\nError: username is mandatory. Please provide username name to setup monitoring pipeline. Exiting the script."
+    echo "\nError: username is mandatory. Please provide username to setup monitoring pipeline. Exiting the script."
     exit 1
 fi
 
 if [[ -z "$password" ]]
 then 
-    echo "\\nError: password is mandatory. Please provide password name to setup monitoring pipeline. Exiting the script."
+    echo "\\nError: password is mandatory. Please provide password to setup monitoring pipeline. Exiting the script."
     exit 1
 fi
 
 if [[ -z "$monitoring_role" ]]
 then 
-    echo "\nError: monitoring role is mandatory. Please provide monitoring role to name to setup monitoring pipeline. Exiting the script."
+    echo "\nError: monitoring role is mandatory. Please provide monitoring role to setup monitoring pipeline. Exiting the script."
     exit 1
 fi
 
 if [[ -z "$config_version" ]]
 then 
-    echo "\nError: config version is mandatory. Please provide config version name to setup monitoring pipeline. Exiting the script."
+    echo "\nError: config version is mandatory. Please provide config version to setup monitoring pipeline. Exiting the script."
     exit 1
 fi
 
 if [[ -z "$front_end_url" ]]
 then 
-    echo "\nError: front end url is mandatory. Please provide front end url name to setup monitoring pipeline. Exiting the script."
+    echo "\nError: front end url is mandatory. Please provide front end url to setup monitoring pipeline. Exiting the script."
     exit 1
 fi
 
 if [[  -z "$monitoring_namespace" ]]
 then 
-    echo "\nError: monitoring namespace is mandatory. Please provide monitoring namespace name to setup monitoring pipeline. Exiting the script."
+    echo "\nError: monitoring namespace is mandatory. Please provide monitoring namespace to setup monitoring pipeline. Exiting the script."
     exit 1
 fi
 
 if [[ -z "$monitoring_environment" ]]
 then 
-    echo "\nError: monitoring environment is mandatory. Please provide monitoring environment name to setup monitoring pipeline. Exiting the script."
+    echo "\nError: monitoring environment is mandatory. Please provide monitoring environment to setup monitoring pipeline. Exiting the script."
     exit 1
 fi
 
 if [[ -z "$monitoring_account" ]]
 then 
-    echo "\nError: monitoring account is mandatory. Please provide monitoring account name to setup monitoring pipeline. Exiting the script."
+    echo "\nError: monitoring account is mandatory. Please provide monitoring account to setup monitoring pipeline. Exiting the script."
     exit 1
 fi
 
 if [[ -z "$container_registry" ]]
 then 
-    echo "\nError: container registry is mandatory. Please provide container registry name to setup monitoring pipeline. Exiting the script."
+    echo "\nError: container registry is mandatory. Please provide container registry to setup monitoring pipeline. Exiting the script."
     exit 1
 fi
 
 if [[ -z "$container_label" ]]
 then 
-    echo "\nError: container label is mandatory. Please provide container label name to setup monitoring pipeline. Exiting the script."
+    echo "\nError: container label is mandatory. Please provide container label to setup monitoring pipeline. Exiting the script."
     exit 1
 fi
 
-if [[ -z "$tenant" || -z "$username" || -z "$password" || -z "$monitoring_role" || -z "$config_version" || -z "$front_end_url" || -z "$monitoring_namespace" || -z "$monitoring_environment" || -z "$monitoring_account" ]]
-then
-  echo -e "\nError : All the above arguments like Tenant, ACR username , password etc.. are mandatory arguments.Please provide required arguments to setup monitoring pipeline.Exiting the script..."
-  exit 1
-else
   # Tenant=AzTenant
   echo -e "\n#################################### Monitoring Setup For **$tenant** ####################################\n\n"
   echo -e "###################################### Installing Docker and Azure CLI #########################################\n\n"
@@ -326,7 +320,7 @@ MyContainerId="$(sudo docker run -it --privileged --rm -d --network host --name 
     sudo docker exec -itd $MyContainerId bash -c '/etc/init.d/cron start'
     
  echo -e "Setting up of Monitoring container is successful.\n"
-fi
+
 
 echo -e "Cleaning up certs and keys from the VM\n"
 
