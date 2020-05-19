@@ -75,9 +75,75 @@ key="$1"
     esac
 done
 
-if [[ -z "$tenant" || -z "$username" || -z "$password" ]]
+if [[ -z "$tenant" ]]
+then 
+    echo "\nError: Tenant is mandatory. Please provide Tenant name to setup monitoring pipeline. Exiting the script."
+    exit 1
+fi
+
+if [[ -z "$username" ]]
+then 
+    echo "\nError: username is mandatory. Please provide username name to setup monitoring pipeline. Exiting the script."
+    exit 1
+fi
+
+if [[ -z "$password" ]]
+then 
+    echo "\\nError: password is mandatory. Please provide password name to setup monitoring pipeline. Exiting the script."
+    exit 1
+fi
+
+if [[ -z "$monitoring_role" ]]
+then 
+    echo "\nError: monitoring role is mandatory. Please provide monitoring role to name to setup monitoring pipeline. Exiting the script."
+    exit 1
+fi
+
+if [[ -z "$config_version" ]]
+then 
+    echo "\nError: config version is mandatory. Please provide config version name to setup monitoring pipeline. Exiting the script."
+    exit 1
+fi
+
+if [[ -z "$front_end_url" ]]
+then 
+    echo "\nError: front end url is mandatory. Please provide front end url name to setup monitoring pipeline. Exiting the script."
+    exit 1
+fi
+
+if [[  -z "$monitoring_namespace" ]]
+then 
+    echo "\nError: monitoring namespace is mandatory. Please provide monitoring namespace name to setup monitoring pipeline. Exiting the script."
+    exit 1
+fi
+
+if [[ -z "$monitoring_environment" ]]
+then 
+    echo "\nError: monitoring environment is mandatory. Please provide monitoring environment name to setup monitoring pipeline. Exiting the script."
+    exit 1
+fi
+
+if [[ -z "$monitoring_account" ]]
+then 
+    echo "\nError: monitoring account is mandatory. Please provide monitoring account name to setup monitoring pipeline. Exiting the script."
+    exit 1
+fi
+
+if [[ -z "$container_registry" ]]
+then 
+    echo "\nError: container registry is mandatory. Please provide container registry name to setup monitoring pipeline. Exiting the script."
+    exit 1
+fi
+
+if [[ -z "$container_label" ]]
+then 
+    echo "\nError: container label is mandatory. Please provide container label name to setup monitoring pipeline. Exiting the script."
+    exit 1
+fi
+
+if [[ -z "$tenant" || -z "$username" || -z "$password" || -z "$monitoring_role" || -z "$config_version" || -z "$front_end_url" || -z "$monitoring_namespace" || -z "$monitoring_environment" || -z "$monitoring_account" ]]
 then
-  echo -e "\nError : Tenant, ACR username and password are mandatory arguments.Please provide required arguments to setup monitoring pipeline.Exiting the script..."
+  echo -e "\nError : All the above arguments like Tenant, ACR username , password etc.. are mandatory arguments.Please provide required arguments to setup monitoring pipeline.Exiting the script..."
   exit 1
 else
   # Tenant=AzTenant
@@ -94,12 +160,9 @@ else
 
   echo -e "\n\n###################################### Logging into ACR and Pulling Monitoring Image ###########################\n\n"
 
-  ## sudo az acr login --name ghpiamecontainer --username $username -p $password
-  sudo az acr login --name ghmccontainer --username $username -p $password
-
-  ##sudo docker pull ghmccontainer.azurecr.io/monitor:latest 
-  ## sudo docker pull ghpiamecontainer.azurecr.io/monitor:latest
-  sudo docker pull ghmccontainer.azurecr.io/monitor_ghpi:latest
+  sudo az acr login --name $container_registry --username $username -p $password
+  container_name=$container_registry".azurecr.io/"$container_label":latest"
+  sudo docker pull $container_name
 
    echo -e "Converting pem file to cert and private key file...."
    GCS_CERT_FOLDER=/gcscerts
@@ -136,7 +199,7 @@ cat > /tmp/collectd <<EOT
          
 export MONITORING_TENANT=$tenant
 export MONITORING_ROLE=$monitoring_role
-export MONITORING_ROLE_INSTANCE=${tenant}_1
+export MONITORING_ROLE_INSTANCE=${tenant}_primary
 EOT
 
 MDSD_ROLE_PREFIX=/var/run/mdsd/default
@@ -174,7 +237,7 @@ cat > /tmp/mdsd <<EOT
     export MONITORING_USE_GENEVA_CONFIG_SERVICE=true
     export MONITORING_TENANT=$tenant
     export MONITORING_ROLE=$monitoring_role
-    export MONITORING_ROLE_INSTANCE=${tenant}_1
+    export MONITORING_ROLE_INSTANCE=${tenant}_primary
 EOT
 
 ## Run container using Monitoring image, if not running already. Copy above created env variable files to container and start the cron job on running container..
@@ -182,7 +245,7 @@ echo -e "Created env variables files for MDM and MDS\n"
 
 echo -e "\n\n###################################### Running and setting up container ########################################\n\n"
 
-MyContainerId="$(sudo docker ps -aqf "name=monitor")"
+MyContainerId="$(sudo docker ps -aqf "name=$container_label")"
 
 #echo $MyContainerId
 if [[ ! -z $MyContainerId ]]
@@ -191,6 +254,50 @@ echo -e "A container with id $MyContainerId is already running. Stopping the con
 sudo docker stop $MyContainerId
 fi
 
+MyContainerId="$(sudo docker run -it --privileged --rm -d --network host --name $container_label $container_name)"
+  if [[ -z $MyContainerId ]]
+  then
+    echo "Error : Failed to run monitor container.Exiting the script..."
+    exit 1
+  fi
+
+  echo -e "\nMonitoring container with Id $MyContainerId has started successfully...\n"
+  sudo docker cp EnvVariables.sh $MyContainerId:root/EnvVariables.sh
+    
+    if [ -f "$GCS_CERT_WITH_KEY" ]; then
+      echo -e "Creating $GCS_CERT_FOLDER in the monitoring container"   
+      sudo docker exec -itd $MyContainerId bash -c test -d "$GCS_CERT_FOLDER" && sudo rm -f "$GCS_CERT_FOLDER/*" || sudo mkdir "$GCS_CERT_FOLDER" 
+    
+      echo -e "Copying cert and key to the monitoring container"
+      sudo docker cp "$GCS_CERT" $MyContainerId:"$GCS_CERT"     
+      sudo docker cp "$GCS_KEY" $MyContainerId:"$GCS_KEY"
+     else 
+       echo -e "Skipping copying of cert and auth file to the container as cert-key file: $GCS_CERT_WITH_KEY doesn't exist."
+    fi
+    
+    sudo docker cp /tmp/collectd $MyContainerId:/etc/default/collectd
+    sudo docker cp /tmp/mdsd $MyContainerId:/etc/default/mdsd
+    sudo docker exec -itd $MyContainerId bash -c '/etc/init.d/cron start'
+    
+ echo -e "Setting up of Monitoring container is successful.\n"
+fi
+
+echo -e "Cleaning up certs and keys from the VM\n"
+
+if  [ -f "$GCS_CERT_WITH_KEY" ]; then
+   echo -e "Removing '$GCS_CERT_WITH_KEY' from the host VM"
+   sudo rm -f "$GCS_CERT_WITH_KEY"
+fi
+
+if [ -f "$GCS_CERT" ]; then
+    echo -e "Cleaning up Geneva agents auth cert file: $GCS_CERT from the host VM"
+    sudo rm -f "$GCS_CERT"
+fi
+
+if [ -f "$GCS_KEY" ]; then
+    echo -e "Cleaning up Geneva agents auth cert file: $GCS_KEY from the host VM"
+    sudo rm -f "$GCS_KEY"
+fi
 
 ## MyContainerId="$(sudo docker run -it --privileged --rm -d --network host --name monitor ghpiamecontainer.azurecr.io/monitor:latest)"
 MyContainerId="$(sudo docker run -it --privileged --rm -d --network host --name monitor_ghpi ghmccontainer.azurecr.io/monitor_ghpi:latest)"
