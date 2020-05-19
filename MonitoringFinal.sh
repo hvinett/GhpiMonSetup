@@ -18,7 +18,7 @@ ARGUMENT_LIST=(
     "containerLabel"
 )
 
-
+echo "Hello"
 
 # read arguments
 opts=$(getopt \
