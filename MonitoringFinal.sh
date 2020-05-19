@@ -1,7 +1,6 @@
 #!/bin/bash
 
 set -e
-echo "Hello"
 POSITIONAL=()
 while [[ $# -gt 0 ]]
 do
@@ -13,11 +12,11 @@ key="$1"
         shift
         echo "Tenant: $tenant"
         ;;
-    --userName)  
+    --username)  
         username=$2
         shift
         shift
-        echo "userName: $username"
+        echo "username: $username"
         ;;
     --password)  
         password=$2
@@ -74,8 +73,6 @@ key="$1"
         echo "container label: $container_label"
         ;;
     esac
-    shift
-    shift
 done
 echo "Tenant = ${tenant}"
 
