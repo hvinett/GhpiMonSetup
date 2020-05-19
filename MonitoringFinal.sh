@@ -1,7 +1,7 @@
 #!/bin/bash
 
 set -e
-echo "Hello"
+#echo "Hello"
 
 for i in "$@"
 do
@@ -31,23 +31,21 @@ do
         config_version="${i#*=}"
         echo "config version: $config_version"
         ;;
-    --frontEndUrl=*)  
-        shift
-        front_end_url="${i#*=}"
-        echo "front end url: $front_end_url"
-        ;;
     --monitoringNamespace=*)  
         shift
+        echo "Hello"
         monitoring_namespace="${i#*=}"
         echo "monitoring namespace: $monitoring_namespace"
         ;;
     --monitoringEnvironment=*)  
         shift
+        echo "Hello"
         monitoring_environment="${i#*=}"
         echo "monitoring environment: $monitoring_environment"
         ;;
     --monitoringAccount=*)  
         shift
+        echo "Hello"
         monitoring_account="${i#*=}"
         echo "monitoring account: $monitoring_account"
         ;;
@@ -60,6 +58,11 @@ do
         shift
         container_label="${i#*=}"
         echo "container label: $container_label"
+        ;;
+    --frontEndUrl=*)  
+        shift
+        front_end_url="${i#*=}"
+        echo "front end url: $front_end_url"
         ;;
     esac
     shift
