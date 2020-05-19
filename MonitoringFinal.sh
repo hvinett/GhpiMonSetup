@@ -29,53 +29,53 @@ opts=$(getopt \
 )
 
 
-echo $opts
+#echo $opts
 
-eval set --$opts
+#eval set --$opts
 
-while true; do
-    case "$1" in
-    --tenant)  
+for i in "$@"; do
+    case "$i" in
+    --tenant=*)  
         shift
         tenant=$1
         ;;
-    --userName)  
+    --userName=*)  
         shift
         userName=$1
         ;;
-    --password)  
+    --password=*)  
         shift
         password=$1
         ;;
-    --monitoringRole)  
+    --monitoringRole=*)  
         shift
         monitoring_role=$1
         ;;
-    --configVersion)  
+    --configVersion=*)  
         shift
         config_version=$1
         ;;
-    --frontEndUrl)  
+    --frontEndUrl=*)  
         shift
         front_end_url=$1
         ;;
-    --monitoringNamespace)  
+    --monitoringNamespace=*)  
         shift
         monitoring_namespace=$1
         ;;
-    --monitoringEnvironment)  
+    --monitoringEnvironment=*)  
         shift
         monitoring_environment=$1
         ;;
-    --monitoringAccount)  
+    --monitoringAccount=*)  
         shift
         monitoring_account=$1
         ;;
-    --containerRegistry)  
+    --containerRegistry=*)  
         shift
         container_registry=$1
         ;;
-    --container_label)  
+    --container_label=*)  
         shift
         container_label=$1
         ;;
