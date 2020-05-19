@@ -49,7 +49,7 @@ while true; do
         ;;
     --monitoringRole)  
         shift
-        toDate=$1
+        monitoring_role=$1
         ;;
     --configVersion)  
         shift
