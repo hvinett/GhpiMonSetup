@@ -74,7 +74,6 @@ key="$1"
         ;;
     esac
 done
-echo "Tenant = ${tenant}"
 
 if [[ -z "$tenant" || -z "$username" || -z "$password" ]]
 then
