@@ -293,7 +293,6 @@ if [ -f "$GCS_KEY" ]; then
     sudo rm -f "$GCS_KEY"
 fi
 
-## MyContainerId="$(sudo docker run -it --privileged --rm -d --network host --name monitor ghpiamecontainer.azurecr.io/monitor:latest)"
 MyContainerId="$(sudo docker run -it --privileged --rm -d --network host --name monitor_ghpi ghmccontainer.azurecr.io/monitor_ghpi:latest)"
   if [[ -z $MyContainerId ]]
   then
