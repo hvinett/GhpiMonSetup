@@ -69,7 +69,7 @@ while true; do
         ;;
     --monitoringAccount)  
         shift
-        toDate=$1
+        monitoring_account=$1
         ;;
     --containerRegistry)  
         shift
@@ -77,7 +77,7 @@ while true; do
         ;;
     --container_label)  
         shift
-        toDate=$1
+        container_label=$1
         ;;
     --)
         shift
