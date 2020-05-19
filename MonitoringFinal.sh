@@ -14,7 +14,7 @@ do
     --userName=*)  
         shift
         username="${i#*=}"
-        echo "userName: $userName"
+        echo "userName: $username"
         ;;
     --password=*)  
         shift
