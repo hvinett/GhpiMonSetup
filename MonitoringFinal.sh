@@ -24,28 +24,30 @@ do
     --monitoringRole=*)  
         shift
         monitoring_role="${i#*=}"
-        echo "monitoring role: $monitoring_role"
+        echo "monitoring role: $monitoringRole"
         ;;
     --configVersion=*)  
         shift
         config_version="${i#*=}"
-        echo "config version: $config_version"
+        echo "config version: $configVersion"
+        ;;
+    --frontEndUrl=*)  
+        shift
+        front_end_url="${i#*=}"
+        echo "front end url: $frontEndUrl"
         ;;
     --monitoringNamespace=*)  
         shift
-        echo "Hello"
         monitoring_namespace="${i#*=}"
-        echo "monitoring namespace: $monitoring_namespace"
+        echo "monitoring namespace: $monitoringNamespace"
         ;;
     --monitoringEnvironment=*)  
         shift
-        echo "Hello"
         monitoring_environment="${i#*=}"
-        echo "monitoring environment: $monitoring_environment"
+        echo "monitoring environment: $monitoringEnvironment"
         ;;
     --monitoringAccount=*)  
         shift
-        echo "Hello"
         monitoring_account="${i#*=}"
         echo "monitoring account: $monitoring_account"
         ;;
@@ -54,15 +56,10 @@ do
         container_registry="${i#*=}"
         echo "container registry: $container_registry"
         ;;
-    --containerLabel=*)  
+    --container_label=*)  
         shift
         container_label="${i#*=}"
         echo "container label: $container_label"
-        ;;
-    --frontEndUrl=*)  
-        shift
-        front_end_url="${i#*=}"
-        echo "front end url: $front_end_url"
         ;;
     esac
     shift
