@@ -37,47 +37,47 @@ for i in "$@"; do
     case "$i" in
     --tenant=*)  
         shift
-        tenant=$1
+        tenant="${i#*=}"
         ;;
     --userName=*)  
         shift
-        userName=$1
+        userName="${i#*=}"
         ;;
     --password=*)  
         shift
-        password=$1
+        password="${i#*=}"
         ;;
     --monitoringRole=*)  
         shift
-        monitoring_role=$1
+        monitoring_role="${i#*=}"
         ;;
     --configVersion=*)  
         shift
-        config_version=$1
+        config_version="${i#*=}"
         ;;
     --frontEndUrl=*)  
         shift
-        front_end_url=$1
+        front_end_url="${i#*=}"
         ;;
     --monitoringNamespace=*)  
         shift
-        monitoring_namespace=$1
+        monitoring_namespace="${i#*=}"
         ;;
     --monitoringEnvironment=*)  
         shift
-        monitoring_environment=$1
+        monitoring_environment="${i#*=}"
         ;;
     --monitoringAccount=*)  
         shift
-        monitoring_account=$1
+        monitoring_account="${i#*=}"
         ;;
     --containerRegistry=*)  
         shift
-        container_registry=$1
+        container_registry="${i#*=}"
         ;;
     --container_label=*)  
         shift
-        container_label=$1
+        container_label="${i#*=}"
         ;;
     --)
         shift
@@ -86,6 +86,7 @@ for i in "$@"; do
     esac
     shift
 done
+echo "Tenant = ${tenant}"
 
 if [[ -z "$tenant" || -z "$username" || -z "$password" ]]
 then
