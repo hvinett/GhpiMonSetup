@@ -1,64 +1,76 @@
 #!/bin/bash
 
 set -e
-#echo "Hello"
-
-for i in "$@"
+echo "Hello"
+POSITIONAL=()
+while [[ $# -gt 0 ]]
 do
-    case "$i" in
-    --tenant=*)  
+key="$1"
+    case "$key" in
+    --tenant)  
+        tenant=$2
         shift
-        tenant="${i#*=}"
+        shift
         echo "Tenant: $tenant"
         ;;
-    --userName=*)  
+    --userName)  
+        username=$2
         shift
-        username="${i#*=}"
+        shift
         echo "userName: $username"
         ;;
-    --password=*)  
+    --password)  
+        password=$2
         shift
-        password="${i#*=}"
+        shift
         echo "password: $password"
         ;;
-    --monitoringRole=*)  
+    --monitoringRole)  
+        monitoring_role=$2
         shift
-        monitoring_role="${i#*=}"
+        shift
         echo "monitoring role: $monitoring_role"
         ;;
-    --configVersion=*)  
+    --configVersion)  
+        config_version=$2
         shift
-        config_version="${i#*=}"
+        shift
         echo "config version: $config_version"
         ;;
-    --frontEndUrl=*)  
+    --frontEndUrl)  
+        front_end_url=$2
         shift
-        front_end_url="${i#*=}"
+        shift
         echo "front end url: $front_end_url"
         ;;
-    --monitoringNamespace=*)  
+    --monitoringNamespace)  
+        monitoring_namespace=$2
         shift
-        monitoring_namespace="${i#*=}"
+        shift
         echo "monitoring namespace: $monitoring_namespace"
         ;;
-    --monitoringEnvironment=*)  
+    --monitoringEnvironment)  
+        monitoring_environment=$2
         shift
-        monitoring_environment="${i#*=}"
+        shift
         echo "monitoring environment: $monitoring_environment"
         ;;
-    --monitoringAccount=*)  
+    --monitoringAccount)  
+        monitoring_account=$2
         shift
-        monitoring_account="${i#*=}"
+        shift
         echo "monitoring account: $monitoring_account"
         ;;
-    --containerRegistry=*)  
+    --containerRegistry)  
+        container_registry=$2
         shift
-        container_registry="${i#*=}"
+        shift
         echo "container registry: $container_registry"
         ;;
-    --container_label=*)  
+    --container_label)  
+        container_label=$2
         shift
-        container_label="${i#*=}"
+        shift
         echo "container label: $container_label"
         ;;
     esac
