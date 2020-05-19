@@ -1,7 +1,7 @@
 #!/bin/bash
 
 set -e
-
+echo "Hello"
 ## Fetch Monitoring Docker image from Azure Container Registry 
 # Read command line options
 ARGUMENT_LIST=(
