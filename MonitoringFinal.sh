@@ -9,55 +9,57 @@ do
     --tenant=*)  
         shift
         tenant="${i#*=}"
-        echo $tenant
+        echo "Tenant: $tenant"
         ;;
     --userName=*)  
         shift
-        userName="${i#*=}"
-        echo $userName
+        username="${i#*=}"
+        echo "userName: $userName"
         ;;
     --password=*)  
         shift
         password="${i#*=}"
-        echo $password
+        echo "password: $password"
         ;;
     --monitoringRole=*)  
         shift
         monitoring_role="${i#*=}"
-        echo $monitoring_role
+        echo "monitoring role: $monitoring_role"
         ;;
     --configVersion=*)  
         shift
         config_version="${i#*=}"
-        echo $config_version
+        echo "config version: $config_version"
         ;;
     --frontEndUrl=*)  
         shift
         front_end_url="${i#*=}"
+        echo "front end url: $front_end_url"
         ;;
     --monitoringNamespace=*)  
         shift
         monitoring_namespace="${i#*=}"
+        echo "monitoring namespace: $monitoring_namespace"
         ;;
     --monitoringEnvironment=*)  
         shift
         monitoring_environment="${i#*=}"
+        echo "monitoring environment: $monitoring_environment"
         ;;
     --monitoringAccount=*)  
         shift
         monitoring_account="${i#*=}"
+        echo "monitoring account: $monitoring_account"
         ;;
     --containerRegistry=*)  
         shift
         container_registry="${i#*=}"
+        echo "container registry: $container_registry"
         ;;
     --container_label=*)  
         shift
         container_label="${i#*=}"
-        ;;
-    --)
-        shift
-        break
+        echo "container label: $container_label"
         ;;
     esac
     shift
