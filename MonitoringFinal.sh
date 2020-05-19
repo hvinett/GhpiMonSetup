@@ -24,27 +24,27 @@ do
     --monitoringRole=*)  
         shift
         monitoring_role="${i#*=}"
-        echo "monitoring role: $monitoringRole"
+        echo "monitoring role: $monitoring_role"
         ;;
     --configVersion=*)  
         shift
         config_version="${i#*=}"
-        echo "config version: $configVersion"
+        echo "config version: $config_version"
         ;;
     --frontEndUrl=*)  
         shift
         front_end_url="${i#*=}"
-        echo "front end url: $frontEndUrl"
+        echo "front end url: $front_end_url"
         ;;
     --monitoringNamespace=*)  
         shift
         monitoring_namespace="${i#*=}"
-        echo "monitoring namespace: $monitoringNamespace"
+        echo "monitoring namespace: $monitoring_namespace"
         ;;
     --monitoringEnvironment=*)  
         shift
         monitoring_environment="${i#*=}"
-        echo "monitoring environment: $monitoringEnvironment"
+        echo "monitoring environment: $monitoring_environment"
         ;;
     --monitoringAccount=*)  
         shift
