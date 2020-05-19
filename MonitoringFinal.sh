@@ -2,36 +2,6 @@
 
 set -e
 echo "Hello"
-## Fetch Monitoring Docker image from Azure Container Registry 
-# Read command line options
-ARGUMENT_LIST=(
-    "tenant"
-    "userName"
-    "password"
-    "monitoringRole"
-    "configVersion"
-    "frontEndUrl"
-    "monitoringNamespace"
-    "monitoringEnvironment"
-    "monitoringAccount"
-    "containerRegistry"
-    "containerLabel"
-)
-
-echo "Hello"
-
-# read arguments
-opts=$(getopt \
-    --longoptions "$(printf "%s:," "${ARGUMENT_LIST[@]}")" \
-    --name "$(basename "$0")" \
-    --options "" \
-    -- "$@"
-)
-
-
-#echo $opts
-
-#eval set --$opts
 
 for i in "$@";
 do
@@ -39,22 +9,27 @@ do
     --tenant=*)  
         shift
         tenant="${i#*=}"
+        echo $tenant
         ;;
     --userName=*)  
         shift
         userName="${i#*=}"
+        echo $userName
         ;;
     --password=*)  
         shift
         password="${i#*=}"
+        echo $password
         ;;
     --monitoringRole=*)  
         shift
         monitoring_role="${i#*=}"
+        echo $monitoring_role
         ;;
     --configVersion=*)  
         shift
         config_version="${i#*=}"
+        echo $config_version
         ;;
     --frontEndUrl=*)  
         shift
