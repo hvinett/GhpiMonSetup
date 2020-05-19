@@ -3,7 +3,7 @@
 set -e
 echo "Hello"
 
-for i in "$@";
+for i in "$@"
 do
     case "$i" in
     --tenant=*)  
