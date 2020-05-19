@@ -33,7 +33,8 @@ opts=$(getopt \
 
 #eval set --$opts
 
-for i in "$@"; do
+for i in "$@";
+do
     case "$i" in
     --tenant=*)  
         shift
