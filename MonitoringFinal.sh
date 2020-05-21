@@ -71,6 +71,11 @@ key="$1"
         shift
         echo "container label: $container_label"
         ;;
+     --isReplica)
+        is_replica=$2
+        shift
+        shift
+        echo "is replica: $is_replica"
      *)
         echo "Invalid parameter: $1"
         exit 1
@@ -191,6 +196,7 @@ fi
     echo -e "\n\n###################################### Creating Environment variable files for MDS and MDM #####################\n\n"
 
 echo "export FRONT_END_URL=$front_end_url" > EnvVariables.sh 
+
 sudo rm -f /tmp/collectd
 cat > /tmp/collectd <<EOT
 # Setting Environment variables for Monitoring
@@ -198,6 +204,13 @@ cat > /tmp/collectd <<EOT
 export MONITORING_TENANT=$tenant
 export MONITORING_ROLE=$monitoring_role
 export MONITORING_ROLE_INSTANCE=${tenant}_primary
+
+if [ $is_replica = "true" ] || [ $is_replica = "True" ] ; then
+{
+	export MONITORING_ROLE_INSTANCE=${tenant}_replica
+}
+fi
+
 EOT
 
 MDSD_ROLE_PREFIX=/var/run/mdsd/default
@@ -236,6 +249,13 @@ cat > /tmp/mdsd <<EOT
     export MONITORING_TENANT=$tenant
     export MONITORING_ROLE=$monitoring_role
     export MONITORING_ROLE_INSTANCE=${tenant}_primary
+    
+    if [ $is_replica = "true" ] || [ $is_replica = "True" ] ; then
+    {
+	    export MONITORING_ROLE_INSTANCE=${tenant}_replica
+    }
+    fi
+    
 EOT
 
 ## Run container using Monitoring image, if not running already. Copy above created env variable files to container and start the cron job on running container..
