@@ -70,6 +70,9 @@ key="$1"
         shift
         shift
         echo "container label: $container_label"
+     *)
+        echo "Invalid parameter: $1"
+        exit 1
         ;;
     esac
 done
