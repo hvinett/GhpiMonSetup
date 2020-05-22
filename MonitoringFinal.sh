@@ -299,7 +299,7 @@ MyContainerId="$(sudo docker run -it --privileged --rm -d --network host --name 
     sudo docker exec -itd $MyContainerId bash -c '/etc/init.d/cron start'
     
  echo -e "Setting up of Monitoring container is successful.\n"
-fi
+
 
 echo -e "Cleaning up certs and keys from the VM\n"
 
