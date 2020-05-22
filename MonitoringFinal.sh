@@ -76,6 +76,7 @@ key="$1"
         shift
         shift
         echo "is replica: $is_replica"
+	;;
      *)
         echo "Invalid parameter: $1"
         exit 1
