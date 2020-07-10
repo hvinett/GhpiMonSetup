@@ -1,42 +1,143 @@
 #!/bin/bash
 
-set -e
-
-## Fetch Monitoring Docker image from Azure Container Registry 
-while getopts ":t:u:p:r:v:f:n:e:a:c:l:" opt; do
-  case $opt in
-    t) tenant="$OPTARG"
-    ;;
-    u) username="$OPTARG"
-    ;;
-    p) password="$OPTARG"
-    ;;
-    r) monitoring_role="$OPTARG"
-    ;;
-    v) config_version="$OPTARG"
-    ;;
-    f) front_end_url="$OPTARG"
-    ;;
-    n) monitoring_namespace="$OPTARG"
-    ;;
-    e) monitoring_environment="$OPTARG"
-    ;;
-    a) monitoring_account="$OPTARG"
-    ;;
-    c) container_registry="$OPTARG"
-    ;;
-    l) container_label="$OPTARG"
-    ;;
-    \?) echo "Invalid option -$OPTARG" >&2
-    ;;
-  esac
+POSITIONAL=()
+while [[ $# -gt 0 ]]
+do
+key="$1"
+    case "$key" in
+    --tenant)  
+        tenant=$2
+        shift
+        shift
+        echo "Tenant: $tenant"
+        ;;
+    --vmManagedUserId)  
+        vmManagedUserId=$2
+        shift
+        shift
+        echo "vmManagedUserId: $vmManagedUserId"
+        ;;
+    --monitoringRole)  
+        monitoring_role=$2
+        shift
+        shift
+        echo "monitoring role: $monitoring_role"
+        ;;
+    --configVersion)  
+        config_version=$2
+        shift
+        shift
+        echo "config version: $config_version"
+        ;;
+    --frontEndUrl)  
+        front_end_url=$2
+        shift
+        shift
+        echo "front end url: $front_end_url"
+        ;;
+    --monitoringNamespace)  
+        monitoring_namespace=$2
+        shift
+        shift
+        echo "monitoring namespace: $monitoring_namespace"
+        ;;
+    --monitoringEnvironment)  
+        monitoring_environment=$2
+        shift
+        shift
+        echo "monitoring environment: $monitoring_environment"
+        ;;
+    --monitoringAccount)  
+        monitoring_account=$2
+        shift
+        shift
+        echo "monitoring account: $monitoring_account"
+        ;;
+    --containerRegistry)  
+        container_registry=$2
+        shift
+        shift
+        echo "container registry: $container_registry"
+        ;;
+    --containerLabel)  
+        container_label=$2
+        shift
+        shift
+        echo "container label: $container_label"
+        ;;
+     --isReplica)
+        is_replica=$2
+        shift
+        shift
+        echo "is replica: $is_replica"
+	;;
+     *)
+        echo "Invalid parameter: $1"
+        exit 1
+        ;;
+    esac
 done
 
-if [[ -z "$tenant" || -z "$username" || -z "$password" || -z "$monitoring_role" || -z "$config_version" || -z "$front_end_url" || -z "$monitoring_namespace" || -z "$monitoring_environment" || -z "$monitoring_account" ]]
-then
-  echo -e "\nError : All the above arguments like Tenant, ACR username , password etc.. are mandatory arguments.Please provide required arguments to setup monitoring pipeline.Exiting the script..."
-  exit 1
-else
+if [[ -z "$tenant" ]]
+then 
+    echo "\nError: Tenant is mandatory. Please provide Tenant to setup monitoring pipeline. Exiting the script."
+    exit 1
+fi
+
+if [[ -z "$vmManagedUserId" ]]
+then 
+    echo "\nError: vmManagedUserId is mandatory. Please provide vmManagedUserId to setup monitoring pipeline. Exiting the script."
+    exit 1
+fi
+
+if [[ -z "$monitoring_role" ]]
+then 
+    echo "\nError: monitoring role is mandatory. Please provide monitoring role to setup monitoring pipeline. Exiting the script."
+    exit 1
+fi
+
+if [[ -z "$config_version" ]]
+then 
+    echo "\nError: config version is mandatory. Please provide config version to setup monitoring pipeline. Exiting the script."
+    exit 1
+fi
+
+if [[ -z "$front_end_url" ]]
+then 
+    echo "\nError: front end url is mandatory. Please provide front end url to setup monitoring pipeline. Exiting the script."
+    exit 1
+fi
+
+if [[  -z "$monitoring_namespace" ]]
+then 
+    echo "\nError: monitoring namespace is mandatory. Please provide monitoring namespace to setup monitoring pipeline. Exiting the script."
+    exit 1
+fi
+
+if [[ -z "$monitoring_environment" ]]
+then 
+    echo "\nError: monitoring environment is mandatory. Please provide monitoring environment to setup monitoring pipeline. Exiting the script."
+    exit 1
+fi
+
+if [[ -z "$monitoring_account" ]]
+then 
+    echo "\nError: monitoring account is mandatory. Please provide monitoring account to setup monitoring pipeline. Exiting the script."
+    exit 1
+fi
+
+if [[ -z "$container_registry" ]]
+then 
+    echo "\nError: container registry is mandatory. Please provide container registry to setup monitoring pipeline. Exiting the script."
+    exit 1
+fi
+
+if [[ -z "$container_label" ]]
+then 
+    echo "\nError: container label is mandatory. Please provide container label to setup monitoring pipeline. Exiting the script."
+    exit 1
+fi
+
   # Tenant=AzTenant
   echo -e "\n#################################### Monitoring Setup For **$tenant** ####################################\n\n"
   echo -e "###################################### Installing Docker and Azure CLI #########################################\n\n"
@@ -51,42 +152,41 @@ else
 
   echo -e "\n\n###################################### Logging into ACR and Pulling Monitoring Image ###########################\n\n"
 
-  ## sudo az acr login --name ghpiamecontainer --username $username -p $password
-  sudo az acr login --name $container_registry --username $username -p $password
+  sudo az login --identity --username $vmManagedUserId
+  sudo az acr login --name $container_registry
   container_name=$container_registry".azurecr.io/"$container_label":latest"
-  ##sudo docker pull ghmccontainer.azurecr.io/monitor:latest 
-  ## sudo docker pull ghpiamecontainer.azurecr.io/monitor:latest
   sudo docker pull $container_name
 
-   echo -e "Converting pem file to cert and private key file...."
-   GCS_CERT_FOLDER=/gcscerts
-   GCS_CERT_WITH_KEY=$GCS_CERT_FOLDER/geneva-cert.pem
-   GCS_CERT=$GCS_CERT_FOLDER/gcscert.pem
-   GCS_KEY=$GCS_CERT_FOLDER/gcskey.pem
+ #  echo -e "Converting pem file to cert and private key file...."
+  GCS_CERT_FOLDER=/gcscerts
+ #  GCS_CERT_WITH_KEY=$GCS_CERT_FOLDER/geneva-cert.pem
+  GCS_CERT=$GCS_CERT_FOLDER/gcscert.pem
+  GCS_KEY=$GCS_CERT_FOLDER/gcskey.pem
 
-   echo -e "Cleaning up existing geneva auth certificate and private key if any"
-   if [ -f "$GCS_CERT" ]; then
-      echo -e "Removing existing Geneva auth certificate: $GCS_CERT"
-      sudo rm -f "$GCS_CERT"
-   fi
+#   echo -e "Cleaning up existing geneva auth certificate and private key if any"
+#   if [ -f "$GCS_CERT" ]; then
+#      echo -e "Removing existing Geneva auth certificate: $GCS_CERT"
+#      sudo rm -f "$GCS_CERT"
+#   fi
 
-   if [ -f "$GCS_KEY" ]; then
-      echo -e "Removing existing Geneva auth key: $GCS_KEY"
-      sudo rm -f "$GCS_KEY"
-   fi
+#   if [ -f "$GCS_KEY" ]; then
+#      echo -e "Removing existing Geneva auth key: $GCS_KEY"
+#      sudo rm -f "$GCS_KEY"
+#   fi
 
-   if [ -f "$GCS_CERT_WITH_KEY" ]; then
-      echo -e "Extracting Geneva auth certificate and key from the file: $GCS_CERT_WITH_KEY"
-      sudo openssl x509 -in "$GCS_CERT_WITH_KEY" -out "$GCS_CERT"  && sudo chmod 744 "$GCS_CERT" 
-      sudo openssl pkey -in "$GCS_CERT_WITH_KEY" -out "$GCS_KEY" && sudo chmod 744 "$GCS_KEY"      
-     else 
-       echo -e "Unable to find the Geneva certificate-key file : $GCS_CERT_WITH_KEY. Skipping the certificate and key extraction.."
-   fi
+#   if [ -f "$GCS_CERT_WITH_KEY" ]; then
+#      echo -e "Extracting Geneva auth certificate and key from the file: $GCS_CERT_WITH_KEY"
+#      sudo openssl x509 -in "$GCS_CERT_WITH_KEY" -out "$GCS_CERT"  && sudo chmod 744 "$GCS_CERT" 
+#      sudo openssl pkey -in "$GCS_CERT_WITH_KEY" -out "$GCS_KEY" && sudo chmod 744 "$GCS_KEY"      
+#     else 
+#       echo -e "Unable to find the Geneva certificate-key file : $GCS_CERT_WITH_KEY. Skipping the certificate and key extraction.."
+#   fi
     
-    ## Create Environment variable files for MDS and MDM
-    echo -e "\n\n###################################### Creating Environment variable files for MDS and MDM #####################\n\n"
+## Create Environment variable files for MDS and MDM
+echo -e "\n\n###################################### Creating Environment variable files for MDS and MDM #####################\n\n"
 
 echo "export FRONT_END_URL=$front_end_url" > EnvVariables.sh 
+
 sudo rm -f /tmp/collectd
 cat > /tmp/collectd <<EOT
 # Setting Environment variables for Monitoring
@@ -94,6 +194,13 @@ cat > /tmp/collectd <<EOT
 export MONITORING_TENANT=$tenant
 export MONITORING_ROLE=$monitoring_role
 export MONITORING_ROLE_INSTANCE=${tenant}_primary
+
+if [ $is_replica = "true" ] || [ $is_replica = "True" ] ; then
+{
+	export MONITORING_ROLE_INSTANCE=${tenant}_replica
+}
+fi
+
 EOT
 
 MDSD_ROLE_PREFIX=/var/run/mdsd/default
@@ -132,6 +239,13 @@ cat > /tmp/mdsd <<EOT
     export MONITORING_TENANT=$tenant
     export MONITORING_ROLE=$monitoring_role
     export MONITORING_ROLE_INSTANCE=${tenant}_primary
+    
+    if [ $is_replica = "true" ] || [ $is_replica = "True" ] ; then
+    {
+	    export MONITORING_ROLE_INSTANCE=${tenant}_replica
+    }
+    fi
+    
 EOT
 
 ## Run container using Monitoring image, if not running already. Copy above created env variable files to container and start the cron job on running container..
@@ -148,8 +262,6 @@ echo -e "A container with id $MyContainerId is already running. Stopping the con
 sudo docker stop $MyContainerId
 fi
 
-
-## MyContainerId="$(sudo docker run -it --privileged --rm -d --network host --name monitor ghpiamecontainer.azurecr.io/monitor:latest)"
 MyContainerId="$(sudo docker run -it --privileged --rm -d --network host --name $container_label $container_name)"
   if [[ -z $MyContainerId ]]
   then
@@ -160,37 +272,38 @@ MyContainerId="$(sudo docker run -it --privileged --rm -d --network host --name 
   echo -e "\nMonitoring container with Id $MyContainerId has started successfully...\n"
   sudo docker cp EnvVariables.sh $MyContainerId:root/EnvVariables.sh
     
-    if [ -f "$GCS_CERT_WITH_KEY" ]; then
-      echo -e "Creating $GCS_CERT_FOLDER in the monitoring container"   
-      sudo docker exec -itd $MyContainerId bash -c test -d "$GCS_CERT_FOLDER" && sudo rm -f "$GCS_CERT_FOLDER/*" || sudo mkdir "$GCS_CERT_FOLDER" 
+#    if [ -f "$GCS_CERT_WITH_KEY" ]; then
+#      echo -e "Creating $GCS_CERT_FOLDER in the monitoring container"   
+#      sudo docker exec -itd $MyContainerId bash -c test -d "$GCS_CERT_FOLDER" && sudo rm -f "$GCS_CERT_FOLDER/*" || sudo mkdir "$GCS_CERT_FOLDER" 
     
-      echo -e "Copying cert and key to the monitoring container"
-      sudo docker cp "$GCS_CERT" $MyContainerId:"$GCS_CERT"     
-      sudo docker cp "$GCS_KEY" $MyContainerId:"$GCS_KEY"
-     else 
-       echo -e "Skipping copying of cert and auth file to the container as cert-key file: $GCS_CERT_WITH_KEY doesn't exist."
-    fi
+#      echo -e "Copying cert and key to the monitoring container"
+#      sudo docker cp "$GCS_CERT" $MyContainerId:"$GCS_CERT"     
+#      sudo docker cp "$GCS_KEY" $MyContainerId:"$GCS_KEY"
+#    else 
+#       echo -e "Skipping copying of cert and auth file to the container as cert-key file: $GCS_CERT_WITH_KEY doesn't exist."
+#   fi
     
     sudo docker cp /tmp/collectd $MyContainerId:/etc/default/collectd
     sudo docker cp /tmp/mdsd $MyContainerId:/etc/default/mdsd
+    sudo docker exec  monitor_ghpi  bash -c 'source /root/EnvVariables.sh;  ./RunMonAgents/RunMonAgents.sh >> /tmp/crontab.logs'
     sudo docker exec -itd $MyContainerId bash -c '/etc/init.d/cron start'
     
  echo -e "Setting up of Monitoring container is successful.\n"
-fi
 
-echo -e "Cleaning up certs and keys from the VM\n"
 
-if  [ -f "$GCS_CERT_WITH_KEY" ]; then
-   echo -e "Removing '$GCS_CERT_WITH_KEY' from the host VM"
-   sudo rm -f "$GCS_CERT_WITH_KEY"
-fi
+#echo -e "Cleaning up certs and keys from the VM\n"
 
-if [ -f "$GCS_CERT" ]; then
-    echo -e "Cleaning up Geneva agents auth cert file: $GCS_CERT from the host VM"
-    sudo rm -f "$GCS_CERT"
-fi
+# if  [ -f "$GCS_CERT_WITH_KEY" ]; then
+#   echo -e "Removing '$GCS_CERT_WITH_KEY' from the host VM"
+#   sudo rm -f "$GCS_CERT_WITH_KEY"
+# fi
 
-if [ -f "$GCS_KEY" ]; then
-    echo -e "Cleaning up Geneva agents auth cert file: $GCS_KEY from the host VM"
-    sudo rm -f "$GCS_KEY"
-fi
+# if [ -f "$GCS_CERT" ]; then
+#    echo -e "Cleaning up Geneva agents auth cert file: $GCS_CERT from the host VM"
+#    sudo rm -f "$GCS_CERT"
+# fi
+
+#if [ -f "$GCS_KEY" ]; then
+#    echo -e "Cleaning up Geneva agents auth cert file: $GCS_KEY from the host VM"
+#    sudo rm -f "$GCS_KEY"
+# fi
