@@ -22,6 +22,6 @@ key="$1"
         ;;
     esac
 done
-$GhesAdminPassword=$(openssl rand -base64 32)
+GhesAdminPassword=$(openssl rand -base64 32)
 az login --identity --username $vmManagedUserId
 az keyvault secret set --vault-name $keyVault --name "GhesAdminPassword" --value "$GhesAdminPassword"
