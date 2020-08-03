@@ -16,12 +16,17 @@ key="$1"
         shift
         echo "vmManagedUserId: $vmManagedUserId"
         ;;
+    --ghesAdminPassword)  
+        ghesAdminPassword=$2
+        shift
+        shift
+        echo "ghesAdminPassword: $ghesAdminPassword"
+        ;;
      *)
         echo "Invalid parameter: $1"
         exit 1
         ;;
     esac
 done
-GhesAdminPassword=$(openssl rand -base64 32)
 az login --identity --username $vmManagedUserId
-az keyvault secret set --vault-name $keyVault --name "GhesAdminPassword" --value "$GhesAdminPassword"
+az keyvault secret set --vault-name $keyVault --name "GhesAdminPassword" --value "$ghesAdminPassword"
