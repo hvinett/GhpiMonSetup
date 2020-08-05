@@ -1,0 +1,28 @@
+{
+    "apiVersion": "2018-06-01",
+    "type": "Microsoft.Compute/virtualMachines/extensions",
+    "name": "virtualMachineName/config-app",
+    "location": "[resourceGroup().location]",
+    
+    "tags": {
+        "displayName": "config-app"
+    },
+	
+    "properties": {
+        "publisher": "Microsoft.Compute",
+        "type": "CustomScriptExtension",
+        "typeHandlerVersion": "1.10",
+        "autoUpgradeMinorVersion": true,
+        "settings": {
+            "fileUris": [
+                "https://havineethghpi.blob.core.windows.net/ghpiscripts/CustomScriptSetGhesPassword.sh?sp=r&st=2020-08-05T07:44:43Z&se=2020-08-05T15:44:43Z&spr=https&sv=2019-12-12&sr=b&sig=hX99xBkx7JbNw%2FlJ4SpsZuZXlJQjHybNuxJ%2FZhSJjcw%3D"
+            ],
+            "timestamp":123456789
+        },
+        "protectedSettings": {
+            "commandToExecute": "./CustomScriptSetGhesPassword.sh --keyVault 'ghes-neh61' --ghesPassword 'abcd' --vmManagedUserId ' /subscriptions/9e01c1b0-6b2c-4deb-81e1-80aa08a9f985/resourceGroups/GHPI-TestInfra-Resources/providers/Microsoft.ManagedIdentity/userAssignedIdentities/ghpiEv2_AzFn_test_identity ",
+            "managedIdentity" : {}
+        }
+    }
+}
+ 
